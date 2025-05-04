@@ -1,10 +1,13 @@
 {
   "manifest_version": 3,
-  "name": "Facebook Sentiment Analyzer",
+  "name": "TeenEmoGuard",
   "version": "1.1",
-  "description": "Analyze sentiment of your latest Facebook posts using the Graph API.",
+  "description": "Analyze sentiment of your latest Facebook posts.",
   "permissions": ["identity", "storage", "scripting"],
   "host_permissions": ["https://graph.facebook.com/*"],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  },
   "background": {
     "service_worker": "background.js"
   },

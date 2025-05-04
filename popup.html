@@ -1,11 +1,147 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Facebook Sentiment</title>
-    <script src="popup.js" defer></script> <!-- Ensure script loads after DOM -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facebook Sentiment Analyzer</title>
+    <style>
+        /* Critical popup width settings - using inline style to ensure width */
+        html, body {
+            width: 800px !important;
+            min-width: 800px !important;
+            max-width: 800px !important;
+            overflow-x: hidden;
+        }
+    </style>
+    <link rel="stylesheet" href="style.css">
+    <!-- Load local Chart.js -->
+    <script src="chart.min.js"></script>
+    <script src="chart-loader.js"></script>
+    <script src="popup.js" defer></script>
 </head>
 <body>
-    <h2>Facebook Sentiment</h2>
-    <button id="analyze">Analyze Posts</button>
+    <div class="container">
+        <header>
+            <h1>Facebook Sentiment Analyzer</h1>
+            <p class="subtitle">Analyze and visualize the sentiment of your Facebook posts</p>
+        </header>
+
+        <div class="actions">
+            <button id="analyze" class="button primary">Analyze Posts</button>
+            <button id="view-results" class="button secondary">View Results</button>
+            <button id="open-settings" class="button tertiary">Settings</button>
+        </div>
+        
+        <div id="loading" class="hidden">
+            <div class="loader"></div>
+            <p>Analyzing your posts...</p>
+        </div>
+
+        <div id="chart-error" class="error-message hidden">
+            <p>Could not load visualization library. Please check your internet connection and try again.</p>
+        </div>
+
+        <!-- Settings Modal -->
+        <div id="settings-modal" class="modal hidden">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Settings</h2>
+                    <button id="close-settings" class="close-button">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="facebook-token">Facebook Access Token:</label>
+                        <input type="password" id="facebook-token" class="form-control" placeholder="Enter your Facebook access token">
+                        <button id="toggle-token-visibility" class="toggle-visibility">Show</button>
+                        <p class="field-description">
+                            Your token is stored securely in your browser. It's never shared with any third parties.
+                        </p>
+                    </div>
+                    <div class="form-group">
+                        <label>Extension ID:</label>
+                        <p id="extension-id-display" class="info-display">Auto-detected</p>
+                        <p class="field-description">This is automatically detected and used for the connection.</p>
+                    </div>
+                    <div id="token-status" class="status-message hidden"></div>
+                    <div class="form-actions">
+                        <button id="validate-token" class="button primary">Validate & Save</button>
+                        <button id="clear-token" class="button danger">Clear Token</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="dashboard" class="hidden">
+            <!-- User Info Bar -->
+            <div class="user-info-bar">
+                <div class="user-avatar">
+                    <span class="avatar-placeholder">👤</span>
+                </div>
+                <div class="user-details">
+                    <h3>Facebook User: <span id="user-display">-</span></h3>
+                    <p class="user-description">Showing sentiment analysis for your Facebook posts</p>
+                </div>
+            </div>
+
+            <div class="summary-cards">
+                <div class="card">
+                    <h3>Total Posts</h3>
+                    <p id="total-posts">0</p>
+                </div>
+                <div class="card">
+                    <h3>Overall Sentiment</h3>
+                    <p id="overall-sentiment">-</p>
+                </div>
+                <div class="card">
+                    <h3>Latest Analysis</h3>
+                    <p id="latest-date">-</p>
+                </div>
+            </div>
+
+            <div class="charts-container">
+                <div class="chart-card">
+                    <h3>Sentiment Distribution</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="distribution-chart"></canvas>
+                        <div id="distribution-fallback" class="chart-fallback hidden"></div>
+                    </div>
+                </div>
+                
+                <div class="chart-card">
+                    <h3>Sentiment Trend</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="trend-chart"></canvas>
+                        <div id="trend-fallback" class="chart-fallback hidden"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="recent-posts">
+                <h3>Recent Posts</h3>
+                <div class="table-container">
+                    <table id="posts-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Post</th>
+                                <th>Sentiment</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Posts will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="error-message" class="hidden">
+            <p class="error">An error occurred. Please try again.</p>
+        </div>
+
+        <footer>
+            <p>© 2025 Facebook Sentiment Analyzer</p>
+        </footer>
+    </div>
 </body>
 </html>
